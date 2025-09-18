@@ -1,0 +1,16 @@
+# Node / RN
+node_modules/
+npm-debug.log
+yarn-error.log
+# React Native build dirs
+android/app/build/
+ios/build/
+# Python env
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+# env + OS
+.env
+.DS_Store
+*.log
