@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "frontend",
-    "slug": "echoverse",
+    "slug": "frontend",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -19,7 +19,11 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "RECORD_AUDIO"
+      ],
+      "package": "com.anshgarg.echoverse"
     },
     "web": {
       "output": "static",
@@ -38,18 +42,12 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    },
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "95eec7fe-e3fa-4230-ac85-9344e3d59c6c"
-      }
-    },
-    "owner": "anshgarg"
+    }
   }
 }
