@@ -2,16 +2,18 @@
 
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-from config import MONGO_URI
+from config import MONGO_URI, DB_NAME
 import bcrypt
+import time 
 
-client = MongoClient(MONGO_URI)
-db = client.get_default_database()
+client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+db = client[DB_NAME]
 
 users = db.users
 oauth_clients = db.oauth_clients
 oauth_codes = db.oauth_codes
 oauth_tokens = db.oauth_tokens
+transcripts = db.transcripts
 
 # helper to convert ObjectId -> str recursively for a doc
 def serialize_doc(doc):
@@ -85,3 +87,10 @@ def save_token(token_doc):
 def get_token(access_token):
     doc = oauth_tokens.find_one({"access_token": access_token})
     return serialize_doc(doc)
+
+# models.py (add near other functions)
+def save_transcript(doc):
+    # doc expected to have: user_id, src_text, tgt_text, src_lang, tgt_lang, meta
+    doc["created_at"] = int(time.time())
+    transcripts.insert_one(doc)
+    return True

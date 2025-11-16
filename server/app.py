@@ -22,8 +22,15 @@ import json
 app = Flask(__name__)
 app.config["SECRET_KEY"] = SECRET_KEY
 CORS(app)
+
+
 from stt import stt_bp
 app.register_blueprint(stt_bp, url_prefix="/api")
+
+from process import process_bp
+app.register_blueprint(process_bp, url_prefix="/api")
+
+
 # ---------------------
 # Register
 # ---------------------
