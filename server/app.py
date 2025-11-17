@@ -16,7 +16,7 @@ from oauth import create_code_doc, verify_pkce, issue_token
 from utils import require_bearer
 import secrets
 import json
-
+from chunk_stream import _flush_buffer, _BUFFERS_META, _BUFFERS, _LOCK, _transcribe_file
 
 
 app = Flask(__name__)
@@ -29,6 +29,9 @@ app.register_blueprint(stt_bp, url_prefix="/api")
 
 from process import process_bp
 app.register_blueprint(process_bp, url_prefix="/api")
+
+from chunk_stream import chunk_bp
+app.register_blueprint(chunk_bp, url_prefix="/api")
 
 
 # ---------------------
@@ -179,3 +182,30 @@ if __name__ == "__main__":
         app.run(host="0.0.0.0", port=8000, debug=True, use_reloader=False)
     except KeyboardInterrupt:
         print("Server stopped by user")
+
+@app.route("/api/flush", methods=["POST"])
+def flush_manual():
+    from chunk_stream import _flush_buffer, _transcribe_file, _BUFFERS_META, _LOCK
+    import os
+
+    data = request.get_json() or {}
+    session_id = data.get("session_id")
+
+    if not session_id:
+        return jsonify({"error": "missing_session_id"}), 400
+
+    file_path = _flush_buffer(session_id)
+    if not file_path:
+        return jsonify({"status": "empty"})
+
+    result = _transcribe_file(file_path)
+    try:
+        os.remove(file_path)
+    except:
+        pass
+
+    # remove session meta
+    with _LOCK:
+        _BUFFERS_META.pop(session_id, None)
+
+    return jsonify(result)

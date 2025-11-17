@@ -9,7 +9,8 @@ from models import save_transcript  # we'll add this helper
 
 process_bp = Blueprint("process", __name__)
 
-ALLOWED_EXT = {".wav", ".mp3", ".m4a", ".flac", ".ogg"}
+ALLOWED_EXT = {".wav", ".mp3", ".m4a", ".flac", ".ogg", ".caf"}
+
 
 @process_bp.route("/process", methods=["POST"])
 def process_audio():
